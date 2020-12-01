@@ -50,39 +50,66 @@ pub mod expense_report {
 #[cfg(test)]
 mod test {
     use crate::day01::expense_report::{find_and_mult_2020_pair, find_and_mult_2020_triple, find_n};
+    use std::time::SystemTime;
 
     #[test]
     fn test_short_pairs() {
         let report = get_short_report();
-        assert_eq!(find_and_mult_2020_pair(report).unwrap(), 514579);
+        let start = SystemTime::now();
+        let result = find_and_mult_2020_pair(report).unwrap();
+        println!("test_short_pairs took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        assert_eq!(result, 514579);
     }
 
     #[test]
     fn test_long_pairs() {
         let report = get_long_report();
+        let start = SystemTime::now();
         let result = find_and_mult_2020_pair(report).unwrap();
+        println!("test_long_pairs took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
         assert_eq!(result, 357504);
     }
 
     #[test]
     fn test_short_triples() {
         let report = get_short_report();
-        assert_eq!(find_and_mult_2020_triple(report).unwrap(), 241861950);
+        let start = SystemTime::now();
+        let result = find_and_mult_2020_triple(report).unwrap();
+        println!("test_short_triples took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        assert_eq!(result, 241861950);
     }
 
     #[test]
     fn test_long_triples() {
         let report = get_long_report();
+        let start = SystemTime::now();
         let result = find_and_mult_2020_triple(report).unwrap();
+        println!("test_long_triples took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
         assert_eq!(result, 12747392);
     }
 
     #[test]
-    fn test_long_quad() {
+    fn test_long_quadruplet() {
         let report = get_long_report();
+        let start = SystemTime::now();
         let result = find_n(4, &report, 2020).unwrap();
-        println!("{:?}", result);
-        assert_eq!(result.iter().fold(0, |a,b| {a+b}), 2020)
+        println!("test_long_quadruplet took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020)
+    }
+
+    #[test]
+    fn test_medium_sextuplet() {
+        let report = vec![
+            1383, 1276, 1613, 1190, 1856, 1528, 1091, 1540, 1720, 1824, 1734, 1919, 1681, 1686,
+            1344, 1644, 1670, 1710, 1708, 1458, 1728, 1972, 1630, 1995, 1763, 1935, 451, 1392, 1990,
+            14, 1893, 1437, 1632, 1933, 1887, 1975, 1453, 1897, 2005, 2008, 1959, 1716, 1635, 1619,
+            543, 231, 123, 11, 1, 4, 55, 24, 342, 1234, 3221, 900, 595, 420, 70, 30, 5, 40, 565,
+            3241, 1123, 2234
+        ]; // worst case as the correct numbers are all at the end gets insanely long adding much more than this
+        let start = SystemTime::now();
+        let result = find_n(6, &report, 2020).unwrap();
+        println!("test_long_sextuplet took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020);
     }
 
     fn get_long_report() -> Vec<i32> {
