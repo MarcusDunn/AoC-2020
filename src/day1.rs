@@ -15,12 +15,16 @@ pub mod expense_report {
 
     pub fn find_and_mult_2020_pair(report: Vec<i32>) -> Option<i32> {
         let v = find_n(2, &report, 2020)?;
-        return Some(v.iter().fold(1, |a, b| { a * b }));
+        return Some(product(v));
     }
 
     pub fn find_and_mult_2020_triple(report: Vec<i32>) -> Option<i32> {
         let v = find_n(3, &report, 2020)?;
-        Some(v.iter().fold(1, |a, b| { a * b }))
+        Some(product(v))
+    }
+
+    fn product(vec: Vec<i32>) -> i32 {
+        vec.iter().fold(1, |a,b| {a*b})
     }
 
     fn find_n(n: i32, report: &Vec<i32>, adds_to: i32) -> Option<Vec<i32>> {
