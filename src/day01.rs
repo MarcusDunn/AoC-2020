@@ -11,7 +11,7 @@ pub mod expense_report {
             }
         }
         None
-    }
+    }K
 
     pub fn find_and_mult_2020_pair(report: Vec<i32>) -> Option<i32> {
         let v = find_n(2, &report, 2020)?;
@@ -49,7 +49,7 @@ pub mod expense_report {
 
 #[cfg(test)]
 mod test {
-    use crate::day1::expense_report::{find_and_mult_2020_pair, find_and_mult_2020_triple};
+    use crate::day01::expense_report::{find_and_mult_2020_pair, find_and_mult_2020_triple};
 
     #[test]
     fn report_test1() {
