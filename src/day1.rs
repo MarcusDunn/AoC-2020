@@ -1,6 +1,51 @@
+pub mod expense_report {
+    use std::collections::HashMap;
+
+    fn find_pair(report: &Vec<i32>, adds_to: i32) -> Option<(i32, i32)> {
+        let mut partner_lookup: HashMap<i32, i32> = HashMap::new();
+        for x in report {
+            if let Some((&k, &v)) = partner_lookup.get_key_value(&x) {
+                return Some((k, v));
+            } else {
+                partner_lookup.insert(adds_to - x, *x);
+            }
+        }
+        None
+    }
+
+    pub fn find_and_mult_2020_pair(report: Vec<i32>) -> Option<i32> {
+        let v = find_n(2, &report, 2020)?;
+        return Some(v.iter().fold(1, |a, b| { a * b }));
+    }
+
+    pub fn find_and_mult_2020_triple(report: Vec<i32>) -> Option<i32> {
+        let v = find_n(3, &report, 2020)?;
+        Some(v.iter().fold(1, |a, b| { a * b }))
+    }
+
+    fn find_n(n: i32, report: &Vec<i32>, adds_to: i32) -> Option<Vec<i32>> {
+        if n == 2 {
+            if let Some((a, b)) = find_pair(&report, adds_to) {
+                return Some(vec![a, b]);
+            }
+        } else {
+            let mut covered: Vec<i32> = Vec::new();
+            for x in report {
+                if let Some(mut v) = find_n(n - 1, &covered, adds_to - x) {
+                    v.push(*x);
+                    return Some(v);
+                } else {
+                    covered.push(*x)
+                }
+            }
+        }
+        None
+    }
+}
+
 #[cfg(test)]
 mod test {
-    use crate::expense_report::expense_report::{find_and_mult_2020_pair, find_and_mult_2020_triple};
+    use crate::day1::expense_report::{find_and_mult_2020_pair, find_and_mult_2020_triple};
 
     #[test]
     fn report_test1() {
@@ -57,5 +102,4 @@ mod test {
         let result = find_and_mult_2020_triple(report).unwrap();
         assert_eq!(result, 12747392);
     }
-
 }
