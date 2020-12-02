@@ -42,11 +42,11 @@ mod day02 {
             let (second, rest) = rest.split_once(" ")?;
             let (letter, password) = rest.split_once(":")?;
             Ok(PolicyPasswordPair::new(
-                letter.parse().unwrap(),
-                first.parse().unwrap(),
-                second.parse().unwrap(),
-                password.trim().parse().unwrap())
-            )
+                letter.parse().ok()?,
+                first.parse().ok()?,
+                second.parse().ok()?,
+                password.trim().parse().ok()?,
+            ))
         }
     }
 }
@@ -66,7 +66,6 @@ mod day02test {
     fn test_large_input() {
         let input = get_large_input();
         let num_following = input.iter().filter(|ppp| ppp.is_following_policy()).count() as i32;
-        println!("{}", num_following);
         assert_eq!(num_following, 562);
     }
 
