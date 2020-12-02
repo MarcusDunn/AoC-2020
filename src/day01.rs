@@ -44,7 +44,7 @@ pub mod expense_report {
 }
 
 #[cfg(test)]
-mod test {
+mod day01test {
     use crate::day01::expense_report::ComboSums;
     use std::time::SystemTime;
 
