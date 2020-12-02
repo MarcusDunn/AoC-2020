@@ -1,4 +1,4 @@
-mod day02 {
+pub mod day02 {
     use std::str::FromStr;
     use std::option::NoneError;
 
@@ -54,23 +54,22 @@ mod day02 {
 #[cfg(test)]
 mod day02test {
     use crate::day02::day02::PolicyPasswordPair;
+    use crate::loader::loader::file_to_vec;
 
     #[test]
     fn test_small_input() {
-        let input = get_small_input();
-        let num_following = input.iter().filter(|ppp| ppp.is_following_policy()).count() as i32;
+        let num_following = time!(get_small_input().iter().filter(|ppp| ppp.is_following_policy()).count()) as i32;
         assert_eq!(num_following, 1)
     }
 
     #[test]
     fn test_large_input() {
-        let input = get_large_input();
-        let num_following = input.iter().filter(|ppp| ppp.is_following_policy()).count() as i32;
+        let num_following = time!(get_large_input().iter().filter(|ppp| ppp.is_following_policy()).count()) as i32;
         assert_eq!(num_following, 562);
     }
 
     fn get_large_input() -> Vec<PolicyPasswordPair> {
-        crate::loader::loader::file_to_vec::<PolicyPasswordPair>("inputs/day02.txt")
+        file_to_vec::<PolicyPasswordPair>("inputs/day02.txt")
     }
 
     fn get_small_input() -> Vec<PolicyPasswordPair> {

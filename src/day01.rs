@@ -47,49 +47,41 @@ pub mod expense_report {
 mod day01test {
     use crate::day01::expense_report::ComboSums;
     use std::time::SystemTime;
+    use crate::loader::loader::file_to_vec;
+    use crate::timer::time;
 
     #[test]
     fn test_short_pairs() {
         let report = get_short_report();
-        let start = SystemTime::now();
-        let result = report.find_combo_product(2020, 2).unwrap();
-        println!("test_short_pairs took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        let result = time!(report.find_combo_product(2020, 2).unwrap());
         assert_eq!(result, 514579);
     }
 
     #[test]
     fn test_long_pairs() {
         let report = get_long_report();
-        let start = SystemTime::now();
-        let result = report.find_combo_product(2020, 2).unwrap();
-        println!("test_long_pairs took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        let result = time!(report.find_combo_product(2020, 2).unwrap());
         assert_eq!(result, 357504);
     }
 
     #[test]
     fn test_short_triples() {
         let report = get_short_report();
-        let start = SystemTime::now();
-        let result = report.find_combo_product(2020, 3).unwrap();
-        println!("test_short_triples took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        let result = time!(report.find_combo_product(2020, 3).unwrap());
         assert_eq!(result, 241861950);
     }
 
     #[test]
     fn test_long_triples() {
         let report = get_long_report();
-        let start = SystemTime::now();
-        let result = report.find_combo_product(2020, 3).unwrap();
-        println!("test_long_triples took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        let result = time!(report.find_combo_product(2020, 3).unwrap());
         assert_eq!(result, 12747392);
     }
 
     #[test]
     fn test_long_quadruplet() {
         let report = get_long_report();
-        let start = SystemTime::now();
-        let result = report.find_combo(2020, 4).unwrap();
-        println!("test_long_quadruplet took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        let result = time!(report.find_combo(2020, 4).unwrap());
         assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020)
     }
 
@@ -97,23 +89,19 @@ mod day01test {
     #[ignore] //takes ages, does pass though we seem to exit cleanly when we dont find anything!
     fn test_long_quintuplet() {
         let report = get_long_report();
-        let start = SystemTime::now();
-        let result = report.find_combo(2020, 5);
-        println!("test_long_sextuplet took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        let result = time!(report.find_combo(2020, 5));
         assert!(result.is_none())
     }
 
     #[test]
     fn test_medium_sextuplet() {
         let report = get_medium_report(); // worst case as the correct numbers are all at the end. Time gets insanely long adding much more to the front than this (adding to the back has a lesser effect)
-        let start = SystemTime::now();
-        let result = report.find_combo(2020, 6).unwrap();
-        println!("test_long_sextuplet took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        let result = time!(report.find_combo(2020, 6).unwrap());
         assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020);
     }
 
     fn get_long_report() -> Vec<i32> {
-        crate::loader::loader::file_to_vec("inputs/day01.txt")
+        file_to_vec("inputs/day01.txt")
     }
 
     fn get_medium_report() -> Vec<i32> {

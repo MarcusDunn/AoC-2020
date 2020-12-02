@@ -1,4 +1,4 @@
-pub(crate) mod loader {
+pub mod loader {
     use std::str::FromStr;
     use std::io::{BufReader, BufRead};
     use std::fs::File;
