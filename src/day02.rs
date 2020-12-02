@@ -38,8 +38,7 @@ mod day02 {
         }
 
 
-
-        pub fn num_following_policy_from_string(passwords_raw: Vec<&str>) -> i32 {
+        pub fn num_following_policy_from_strings(passwords_raw: Vec<&str>) -> i32 {
             passwords_raw.iter()
                 .map(|s| { PolicyPasswordPair::from_string(s) })
                 .filter(|p| { p.is_following_policy() })
