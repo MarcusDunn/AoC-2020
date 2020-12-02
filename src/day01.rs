@@ -94,10 +94,20 @@ mod test {
     }
 
     #[test]
-    fn test_medium_sextuplet() {
-        let report = get_medium_report(); // worst case as the correct numbers are all at the end. Time gets insanely long adding much more to the front than this
+    #[ignore] //takes ages, does pass though we seem to exit cleanly when we dont find anything!
+    fn test_long_quintuplet() {
+        let report = get_long_report();
         let start = SystemTime::now();
-        let result = report.find_combo(2020, 4).unwrap();
+        let result = report.find_combo(2020, 5);
+        println!("test_long_sextuplet took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+        assert!(result.is_none())
+    }
+
+    #[test]
+    fn test_medium_sextuplet() {
+        let report = get_medium_report(); // worst case as the correct numbers are all at the end. Time gets insanely long adding much more to the front than this (adding to the back has a lesser effect)
+        let start = SystemTime::now();
+        let result = report.find_combo(2020, 6).unwrap();
         println!("test_long_sextuplet took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
         assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020);
     }
