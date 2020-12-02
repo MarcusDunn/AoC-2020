@@ -96,7 +96,7 @@ mod day01test {
     #[test]
     fn test_medium_sextuplet() {
         let report = get_medium_report(); // worst case as the correct numbers are all at the end. Time gets insanely long adding much more to the front than this (adding to the back has a lesser effect)
-        let result = time!(report.find_combo(2020, 6).unwrap());
+        let result = time!(report.find_combo(2020, 6).unwrap(), "test_medium_sextuplet");
         assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020);
     }
 

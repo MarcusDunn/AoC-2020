@@ -9,5 +9,9 @@ pub mod time {
             println!("test took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
             result
         }};
+        ($expr:expr, $message:literal) => {{
+            println!($message);
+            time!($expr)
+        }}
     }
 }
