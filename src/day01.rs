@@ -46,42 +46,40 @@ pub mod expense_report {
 #[cfg(test)]
 mod day01test {
     use crate::day01::expense_report::ComboSums;
-    use std::time::SystemTime;
     use crate::loader::loader::file_to_vec;
-    use crate::timer::time;
 
     #[test]
     fn test_short_pairs() {
         let report = get_short_report();
-        let result = time!(report.find_combo_product(2020, 2).unwrap());
+        let result = timed!(report.find_combo_product(2020, 2).unwrap(), "test_short_pairs");
         assert_eq!(result, 514579);
     }
 
     #[test]
     fn test_long_pairs() {
         let report = get_long_report();
-        let result = time!(report.find_combo_product(2020, 2).unwrap());
+        let result = timed!(report.find_combo_product(2020, 2).unwrap(), "test_long_pairs");
         assert_eq!(result, 357504);
     }
 
     #[test]
     fn test_short_triples() {
         let report = get_short_report();
-        let result = time!(report.find_combo_product(2020, 3).unwrap());
+        let result = timed!(report.find_combo_product(2020, 3).unwrap(), "test_short_triples");
         assert_eq!(result, 241861950);
     }
 
     #[test]
     fn test_long_triples() {
         let report = get_long_report();
-        let result = time!(report.find_combo_product(2020, 3).unwrap());
+        let result = timed!(report.find_combo_product(2020, 3).unwrap(), "test_long_triples");
         assert_eq!(result, 12747392);
     }
 
     #[test]
     fn test_long_quadruplet() {
         let report = get_long_report();
-        let result = time!(report.find_combo(2020, 4).unwrap());
+        let result = timed!(report.find_combo(2020, 4).unwrap(), "test_long_quadruplet");
         assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020)
     }
 
@@ -89,14 +87,14 @@ mod day01test {
     #[ignore] //takes ages, does pass though we seem to exit cleanly when we dont find anything!
     fn test_long_quintuplet() {
         let report = get_long_report();
-        let result = time!(report.find_combo(2020, 5));
+        let result = timed!(report.find_combo(2020, 5), "test_long_quintuplet");
         assert!(result.is_none())
     }
 
     #[test]
     fn test_medium_sextuplet() {
         let report = get_medium_report(); // worst case as the correct numbers are all at the end. Time gets insanely long adding much more to the front than this (adding to the back has a lesser effect)
-        let result = time!(report.find_combo(2020, 6).unwrap(), "test_medium_sextuplet");
+        let result = timed!(report.find_combo(2020, 6).unwrap(), "test_medium_sextuplet");
         assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020);
     }
 

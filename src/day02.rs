@@ -58,13 +58,13 @@ mod day02test {
 
     #[test]
     fn test_small_input() {
-        let num_following = time!(get_small_input().iter().filter(|ppp| ppp.is_following_policy()).count()) as i32;
+        let num_following = timed!(get_small_input().iter().filter(|ppp| ppp.is_following_policy()).count(), "test_small_input") as i32;
         assert_eq!(num_following, 1)
     }
 
     #[test]
     fn test_large_input() {
-        let num_following = time!(get_large_input().iter().filter(|ppp| ppp.is_following_policy()).count()) as i32;
+        let num_following = timed!(get_large_input().iter().filter(|ppp| ppp.is_following_policy()).count(), "test_large_input") as i32;
         assert_eq!(num_following, 562);
     }
 
