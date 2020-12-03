@@ -2,7 +2,7 @@ pub mod day03 {
     use std::option::NoneError;
     use std::str::FromStr;
 
-    pub struct Patch {
+    struct Patch {
         contents: bool,
     }
 
@@ -93,7 +93,9 @@ mod day03test {
         let input = Forest {
             contents: load_large(),
         };
-        result = load_pairs().iter().fold(1, |acc:i64, (dx, dy)| acc * input.trees_hit(*dx, *dy));
+        let result = load_pairs()
+            .iter()
+            .fold(1, |acc: i64, (dx, dy)| acc * input.trees_hit(*dx, *dy) as i64);
         println!("result large part 2 {}", result);
     }
 
