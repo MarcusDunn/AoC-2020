@@ -23,7 +23,7 @@ pub mod day03 {
     }
 
     pub struct Forest {
-        pub(crate) contents: Vec<Row>,
+        pub contents: Vec<Row>,
     }
 
     impl Forest {
@@ -93,10 +93,7 @@ mod day03test {
         let input = Forest {
             contents: load_large(),
         };
-        let mut result: i128 = 1;
-        for (dx, dy) in load_pairs() {
-            result = result * input.trees_hit(dx, dy) as i128;
-        }
+        result = load_pairs().iter().fold(1, |acc:i64, (dx, dy)| acc * input.trees_hit(*dx, *dy));
         println!("result large part 2 {}", result);
     }
 
