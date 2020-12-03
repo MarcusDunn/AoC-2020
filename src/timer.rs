@@ -6,13 +6,16 @@ pub mod time {
             use std::time::SystemTime;
             let start = SystemTime::now();
             let result = $expr;
-            println!("took {}ms", SystemTime::now().duration_since(start).unwrap().as_millis());
+            println!(
+                "took {}ms",
+                SystemTime::now().duration_since(start).unwrap().as_millis()
+            );
             result
         }};
         ($expr:expr, $message:literal) => {{
             print!($message);
             print!(" ");
             timed!($expr)
-        }}
+        }};
     }
 }

@@ -13,7 +13,7 @@ pub mod expense_report {
         None
     }
 
-    impl ComboSums for Vec<i32> {
+    impl ComboSums<i32> for Vec<i32> {
         fn find_combo(&self, goal: i32, vec_len: i32) -> Option<Vec<i32>> {
             if vec_len == 2 {
                 if let Some((a, b)) = find_pair(self, goal) {
@@ -22,7 +22,7 @@ pub mod expense_report {
             } else {
                 let mut covered: Vec<i32> = Vec::new();
                 for &x in self {
-                    if let Some(mut v) = covered.find_combo(goal-x, vec_len-1) {
+                    if let Some(mut v) = covered.find_combo(goal - x, vec_len - 1) {
                         v.push(x);
                         return Some(v);
                     } else {
@@ -32,14 +32,15 @@ pub mod expense_report {
             }
             None
         }
-    }
-
-    pub trait ComboSums {
-        fn find_combo(&self, goal: i32, vec_len: i32) -> Option<Vec<i32>>;
 
         fn find_combo_product(&self, goal: i32, vec_len: i32) -> Option<i32> {
-            Some(self.find_combo(goal, vec_len)?.iter().fold(1, |a,b| {a*b}))
+            Some(self.find_combo(goal, vec_len)?.iter().fold(1, |acc, x| acc * x))
         }
+    }
+
+    pub trait ComboSums<T> {
+        fn find_combo(&self, sum_goal: T, vec_len: i32) -> Option<Vec<T>>;
+        fn find_combo_product(&self, sum_goal: T, vec_len: i32) -> Option<T>;
     }
 }
 
@@ -80,7 +81,7 @@ mod day01test {
     fn test_long_quadruplet() {
         let report = get_long_report();
         let result = timed!(report.find_combo(2020, 4).unwrap(), "test_long_quadruplet");
-        assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020)
+        assert_eq!(result.iter().fold(0, |a, b| a + b), 2020)
     }
 
     #[test]
@@ -95,7 +96,7 @@ mod day01test {
     fn test_medium_sextuplet() {
         let report = get_medium_report(); // worst case as the correct numbers are all at the end. Time gets insanely long adding much more to the front than this (adding to the back has a lesser effect)
         let result = timed!(report.find_combo(2020, 6).unwrap(), "test_medium_sextuplet");
-        assert_eq!(result.iter().fold(0, |a, b| { a + b }), 2020);
+        assert_eq!(result.iter().fold(0, |a, b| a + b), 2020);
     }
 
     fn get_long_report() -> Vec<i32> {

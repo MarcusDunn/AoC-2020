@@ -1,6 +1,6 @@
 pub mod day02 {
-    use std::str::FromStr;
     use std::option::NoneError;
+    use std::str::FromStr;
 
     #[derive(Debug)]
     pub struct PolicyPasswordPair {
@@ -10,9 +10,13 @@ pub mod day02 {
         password: String,
     }
 
-
     impl PolicyPasswordPair {
-        pub fn new(letter: char, first_char: i32, second_char: i32, password: String) -> PolicyPasswordPair {
+        pub fn new(
+            letter: char,
+            first_char: i32,
+            second_char: i32,
+            password: String,
+        ) -> PolicyPasswordPair {
             PolicyPasswordPair {
                 letter,
                 first_char,
@@ -21,13 +25,13 @@ pub mod day02 {
             }
         }
 
-
         pub fn is_following_policy(&self) -> bool {
             if let Some(first) = self.password.chars().nth((self.first_char - 1) as usize) {
                 if let Some(second) = self.password.chars().nth((self.second_char - 1) as usize) {
                     let is_letter_at_first = first == self.letter;
                     let is_letter_at_second = second == self.letter;
-                    return (is_letter_at_first || is_letter_at_second) && !(is_letter_at_first && is_letter_at_second);
+                    return (is_letter_at_first || is_letter_at_second)
+                        && !(is_letter_at_first && is_letter_at_second);
                 }
             }
             false
@@ -58,13 +62,25 @@ mod day02test {
 
     #[test]
     fn test_small_input() {
-        let num_following = timed!(get_small_input().iter().filter(|ppp| ppp.is_following_policy()).count(), "test_small_input") as i32;
+        let num_following = timed!(
+            get_small_input()
+                .iter()
+                .filter(|ppp| ppp.is_following_policy())
+                .count(),
+            "test_small_input"
+        ) as i32;
         assert_eq!(num_following, 1)
     }
 
     #[test]
     fn test_large_input() {
-        let num_following = timed!(get_large_input().iter().filter(|ppp| ppp.is_following_policy()).count(), "test_large_input") as i32;
+        let num_following = timed!(
+            get_large_input()
+                .iter()
+                .filter(|ppp| ppp.is_following_policy())
+                .count(),
+            "test_large_input"
+        ) as i32;
         assert_eq!(num_following, 562);
     }
 
@@ -73,7 +89,8 @@ mod day02test {
     }
 
     fn get_small_input() -> Vec<PolicyPasswordPair> {
-        vec!["1-3 a: abcde", "1-3 b: cdefg", "2-9 c: ccccccccc"].iter()
+        vec!["1-3 a: abcde", "1-3 b: cdefg", "2-9 c: ccccccccc"]
+            .iter()
             .map(|s| s.parse().unwrap())
             .collect()
     }
