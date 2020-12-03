@@ -7,8 +7,8 @@ pub mod time {
             let start = SystemTime::now();
             let result = $expr;
             println!(
-                "took {}ms",
-                SystemTime::now().duration_since(start).unwrap().as_millis()
+                "took {}ns",
+                SystemTime::now().duration_since(start).unwrap().as_nanos()
             );
             result
         }};

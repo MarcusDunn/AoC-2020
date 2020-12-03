@@ -2,23 +2,13 @@ pub mod day03 {
     use std::option::NoneError;
     use std::str::FromStr;
 
-    struct Patch {
-        contents: bool,
-    }
-
-    impl Patch {
-        pub fn contains_tree(&self) -> bool {
-            self.contents
-        }
-    }
-
     pub struct Row {
-        contents: Vec<Patch>,
+        contents: Vec<Option<()>>,
     }
 
     impl Row {
-        pub fn get(&self, index: usize) -> &Patch {
-            self.contents.get(index % self.contents.len()).unwrap()
+        pub fn get(&self, index: usize) -> Option<()> {
+            self.contents[index % self.contents.len()]
         }
     }
 
@@ -36,7 +26,7 @@ pub mod day03 {
             let mut counter: usize = 0;
 
             while let Some(row) = self.get(counter * dy) {
-                if row.get(counter * dx).contains_tree() {
+                if row.get(counter * dx).is_some() {
                     ret = ret + 1;
                 }
                 counter = counter + 1;
@@ -49,17 +39,15 @@ pub mod day03 {
         type Err = NoneError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let mut ret = Vec::new();
-            for x in s.chars() {
-                if x == '#' {
-                    ret.push(Patch { contents: true })
-                } else if x == '.' {
-                    ret.push(Patch { contents: false })
-                } else {
-                    unreachable!("should not be able to reach here while parsing");
-                }
-            }
-            Ok(Row { contents: ret })
+            Ok(Row {
+                contents: s
+                    .chars()
+                    .map(|c| match c {
+                        '#' => Some(()),
+                        _ => None,
+                    })
+                    .collect(),
+            })
         }
     }
 }
@@ -76,7 +64,7 @@ mod day03test {
         let input: Forest = Forest {
             contents: file_to_vec("inputs/day03small.txt"),
         };
-        let result = input.trees_hit(3, 1);
+        let result = timed!(input.trees_hit(3, 1), "test_small");
         assert_eq!(result, 7);
     }
     #[test]
@@ -84,7 +72,7 @@ mod day03test {
         let input = Forest {
             contents: load_large(),
         };
-        let result = input.trees_hit(3, 1);
+        let result = timed!(input.trees_hit(3, 1), "test_large");
         assert_eq!(result, 276);
     }
 
@@ -93,10 +81,12 @@ mod day03test {
         let input = Forest {
             contents: load_large(),
         };
-        let result = load_pairs()
-            .iter()
-            .fold(1, |acc: i64, (dx, dy)| acc * input.trees_hit(*dx, *dy) as i64);
-        println!("result large part 2 {}", result);
+        let result = timed!(
+            load_pairs().iter().fold(1, |acc: u64, (dx, dy)| acc
+                * input.trees_hit(*dx, *dy) as u64),
+            "test_large_part_2"
+        );
+        assert_eq!(result, 7812180000);
     }
 
     fn load_large() -> Vec<Row> {
