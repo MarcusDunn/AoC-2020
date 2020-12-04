@@ -1,7 +1,5 @@
 pub mod day03 {
     use crate::day03::day03::Contents::{Empty, Tree};
-    use std::option::NoneError;
-    use std::str::FromStr;
 
     #[derive(Copy, Clone, Eq, PartialEq)]
     enum Contents {
@@ -11,10 +9,7 @@ pub mod day03 {
 
     impl Contents {
         fn is_tree(&self) -> bool {
-            match self {
-                Tree => true,
-                _ => false,
-            }
+            *self == Contents::Tree
         }
     }
 
@@ -29,7 +24,6 @@ pub mod day03 {
 
     pub struct Forest {
         contents: Vec<Contents>,
-        height: usize,
         width: usize,
     }
 
@@ -45,14 +39,12 @@ pub mod day03 {
                     })
                     .flatten()
                     .collect(),
-                height: contents.len(),
-                width: contents[0].len(),
+                width: contents.first().unwrap().len(),
             }
         }
 
-        #[inline(always)]
-        fn get(&self, x: usize, y: usize) -> Contents {
-            self.contents[y * self.width + (x % self.width)]
+        fn get(&self, x: usize, y: usize) -> Option<&Contents> {
+            self.contents.get(y * self.width + (x % self.width))
         }
 
         pub fn trees_hit(&self, dx: usize, dy: usize) -> i32 {
@@ -60,9 +52,9 @@ pub mod day03 {
             let mut curr_h = 0;
             let mut curr_w = 0;
 
-            while curr_h < self.height {
-                if self.get(curr_w, curr_h) == Contents::Tree {
-                    hit_count = hit_count + 1;
+            while let Some(square) = self.get(curr_w, curr_h) {
+                if square.is_tree() {
+                    hit_count += 1;
                 }
                 curr_h += dy;
                 curr_w += dx;
@@ -79,7 +71,7 @@ mod day03test {
 
     #[test]
     fn test_small() {
-        let input: Forest = Forest::new(file_to_vec("inputs/day03small.txt"));
+        let input = Forest::new(file_to_vec("inputs/day03small.txt"));
         let result = timed!(input.trees_hit(3, 1), "test_small");
         assert_eq!(result, 7);
     }
