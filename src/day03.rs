@@ -1,96 +1,110 @@
 pub mod day03 {
+    use crate::day03::day03::Contents::{Empty, Tree};
     use std::option::NoneError;
     use std::str::FromStr;
 
-    pub struct Row {
-        contents: Vec<Option<()>>,
+    #[derive(Copy, Clone, Eq, PartialEq)]
+    enum Contents {
+        Tree,
+        Empty,
     }
 
-    impl Row {
-        pub fn get(&self, index: usize) -> Option<()> {
-            self.contents[index % self.contents.len()]
+    impl Contents {
+        fn is_tree(&self) -> bool {
+            match self {
+                Tree => true,
+                _ => false,
+            }
+        }
+    }
+
+    impl From<char> for Contents {
+        fn from(c: char) -> Self {
+            match c {
+                '#' => Tree,
+                _ => Empty,
+            }
         }
     }
 
     pub struct Forest {
-        pub contents: Vec<Row>,
+        contents: Vec<Contents>,
+        height: usize,
+        width: usize,
     }
 
     impl Forest {
-        fn get(&self, index: usize) -> Option<&Row> {
-            self.contents.get(index)
+        pub fn new(contents: Vec<String>) -> Forest {
+            Forest {
+                contents: contents
+                    .iter()
+                    .map(|str| {
+                        str.chars()
+                            .map(|c| Contents::from(c))
+                            .collect::<Vec<Contents>>()
+                    })
+                    .flatten()
+                    .collect(),
+                height: contents.len(),
+                width: contents[0].len(),
+            }
+        }
+
+        #[inline(always)]
+        fn get(&self, x: usize, y: usize) -> Contents {
+            self.contents[y * self.width + (x % self.width)]
         }
 
         pub fn trees_hit(&self, dx: usize, dy: usize) -> i32 {
-            let mut ret = 0;
-            let mut counter: usize = 0;
+            let mut hit_count = 0;
+            let mut curr_h = 0;
+            let mut curr_w = 0;
 
-            while let Some(row) = self.get(counter * dy) {
-                if row.get(counter * dx).is_some() {
-                    ret = ret + 1;
+            while curr_h < self.height {
+                if self.get(curr_w, curr_h) == Contents::Tree {
+                    hit_count = hit_count + 1;
                 }
-                counter = counter + 1;
+                curr_h += dy;
+                curr_w += dx;
             }
-            ret
-        }
-    }
-
-    impl FromStr for Row {
-        type Err = NoneError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            Ok(Row {
-                contents: s
-                    .chars()
-                    .map(|c| match c {
-                        '#' => Some(()),
-                        _ => None,
-                    })
-                    .collect(),
-            })
+            hit_count
         }
     }
 }
 
 #[cfg(test)]
 mod day03test {
-    use crate::day03::day03::{Forest, Row};
+    use crate::day03::day03::Forest;
     use crate::loader::loader::file_to_vec;
-    use std::option::NoneError;
-    use std::str::FromStr;
 
     #[test]
     fn test_small() {
-        let input: Forest = Forest {
-            contents: file_to_vec("inputs/day03small.txt"),
-        };
+        let input: Forest = Forest::new(file_to_vec("inputs/day03small.txt"));
         let result = timed!(input.trees_hit(3, 1), "test_small");
         assert_eq!(result, 7);
     }
+
     #[test]
     fn test_large() {
-        let input = Forest {
-            contents: load_large(),
-        };
+        let input = Forest::new(load_large());
         let result = timed!(input.trees_hit(3, 1), "test_large");
         assert_eq!(result, 276);
     }
 
     #[test]
     fn test_large_part_2() {
-        let input = Forest {
-            contents: load_large(),
-        };
+        let input = Forest::new(load_large());
         let result = timed!(
-            load_pairs().iter().fold(1, |acc: u64, (dx, dy)| acc
-                * input.trees_hit(*dx, *dy) as u64),
+            load_pairs().iter().fold(1, |acc: u64, (dx, dy)| {
+                acc * input.trees_hit(*dx, *dy) as u64
+            }),
             "test_large_part_2"
         );
         assert_eq!(result, 7812180000);
     }
 
-    fn load_large() -> Vec<Row> {
-        file_to_vec::<Row>("inputs/day03.txt")
+    fn load_large() -> Vec<String> {
+        file_to_vec::<String>("inputs/day03.txt")
     }
 
     fn load_pairs() -> Vec<(usize, usize)> {
