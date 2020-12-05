@@ -184,11 +184,7 @@ mod day04 {
 
         pub fn is_valid(&self) -> bool {
             let cond1 = self.fields.iter().filter(|f| f.is_needed()).count() == 7;
-            let cond2 = self.fields.iter().all(|f| {if f.meets_requirements() {
-                true
-            } else {
-                false
-            }});
+            let cond2 = self.fields.iter().all(|f| f.meets_requirements());
             cond1 && cond2
         }
     }
@@ -197,36 +193,36 @@ mod day04 {
 #[cfg(test)]
 mod day04test {
     use crate::day04::day04::Passport;
-    use crate::loader::loader::file_to_vec_by_sep;
+    use crate::loader::loader::file_to_vec_by_blank_lines;
 
     #[test]
     fn test_parse() {
-        let _input: Vec<Passport> = file_to_vec_by_sep("inputs/day04small.txt", "\n\n");
+        let _input: Vec<Passport> = file_to_vec_by_blank_lines("inputs/day04small.txt");
     }
 
     #[test]
     fn test_small() {
-        let input: Vec<Passport> = file_to_vec_by_sep("inputs/day04small.txt", "\n\n");
+        let input: Vec<Passport> = file_to_vec_by_blank_lines("inputs/day04small.txt");
         let result = input.iter().filter(|pass| pass.is_valid()).count();
         assert_eq!(result, 2);
     }
 
     #[test]
     fn test_large() {
-        let input: Vec<Passport> = file_to_vec_by_sep("inputs/day04.txt", "\n\n");
+        let input: Vec<Passport> = file_to_vec_by_blank_lines("inputs/day04.txt");
         let result = input.iter().filter(|pass| pass.is_valid()).count();
         println!("{}", result)
     }
 
     #[test]
     fn test_p2_small_invalid() {
-        let input: Vec<Passport> = file_to_vec_by_sep("inputs/day04small1.txt", "\n\n");
+        let input: Vec<Passport> = file_to_vec_by_blank_lines("inputs/day04small1.txt");
         assert!(!input.iter().any(|p| p.is_valid()))
     }
 
     #[test]
     fn test_p2_small_valid() {
-        let input: Vec<Passport> = file_to_vec_by_sep("inputs/day04small2.txt", "\n\n");
+        let input: Vec<Passport> = file_to_vec_by_blank_lines("inputs/day04small2.txt");
         assert!(input.iter().all(|p| p.is_valid()))
     }
 }

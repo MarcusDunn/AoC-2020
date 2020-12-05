@@ -1,6 +1,6 @@
 pub mod loader {
     use std::fs::File;
-    use std::io::{BufRead, BufReader};
+    use std::io::{BufRead, BufReader, Read};
     use std::ops::Add;
     use std::str::FromStr;
 
@@ -11,7 +11,7 @@ pub mod loader {
             .collect()
     }
 
-    pub fn file_to_vec_by_sep<T: FromStr>(path: &str, _sep: &str) -> Vec<T> {
+    pub fn file_to_vec_by_blank_lines<T: FromStr>(path: &str) -> Vec<T> {
         let lines: Vec<String> = BufReader::new(File::open(path).unwrap())
             .lines()
             .map(|s| s.unwrap())
