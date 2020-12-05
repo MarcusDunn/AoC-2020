@@ -1,6 +1,6 @@
 pub mod loader {
     use std::fs::File;
-    use std::io::{BufRead, BufReader, Read};
+    use std::io::{BufRead, BufReader};
     use std::ops::Add;
     use std::str::FromStr;
 
