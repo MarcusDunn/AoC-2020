@@ -1,7 +1,7 @@
 mod day05 {
     use std::str::FromStr;
 
-    pub struct Ticket {
+    pub struct Seat {
         row: i32,
         col: i32,
     }
@@ -39,10 +39,10 @@ mod day05 {
         }
     }
 
-    impl Ticket {
-        fn new(seat: Vec<char>) -> Ticket {
-            let (row, col) = Ticket::get_seat_location(&seat);
-            Ticket { row, col }
+    impl Seat {
+        fn new(seat: Vec<char>) -> Seat {
+            let (row, col) = Seat::get_seat_location(&seat);
+            Seat { row, col }
         }
 
         pub fn get_seat_id(&self) -> i32 {
@@ -69,47 +69,47 @@ mod day05 {
         }
     }
 
-    impl FromStr for Ticket {
+    impl FromStr for Seat {
         type Err = ();
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
-            Ok(Ticket::new(s.chars().collect()))
+            Ok(Seat::new(s.chars().collect()))
         }
     }
 }
 
 #[cfg(test)]
 mod day05test {
-    use crate::day05::day05::Ticket;
+    use crate::day05::day05::Seat;
     use crate::loader::loader::file_to_vec;
     use std::str::FromStr;
 
     #[test]
     fn test_from_str() {
-        Ticket::from_str("FBFBBFFRLR").unwrap();
+        Seat::from_str("FBFBBFFRLR").unwrap();
     }
 
     #[test]
     fn test_get_seat() {
-        let t = Ticket::from_str("FBFBBFFRLR").unwrap();
+        let t = Seat::from_str("FBFBBFFRLR").unwrap();
         assert_eq!(t.get_seat_id(), 357)
     }
 
     #[test]
     fn test_parse() {
-        file_to_vec::<Ticket>("inputs/day05.txt");
+        file_to_vec::<Seat>("inputs/day05.txt");
     }
 
     #[test]
     fn test_large() {
-        let input = file_to_vec::<Ticket>("inputs/day05.txt");
+        let input = file_to_vec::<Seat>("inputs/day05.txt");
         let max = input.iter().max_by_key(|t| t.get_seat_id()).unwrap();
         assert_eq!(max.get_seat_id(), 842);
     }
 
     #[test]
     fn test_find_my_seat() {
-        let mut input = file_to_vec::<Ticket>("inputs/day05.txt");
+        let mut input = file_to_vec::<Seat>("inputs/day05.txt");
         input.sort_by_key(|t| t.get_seat_id());
         let result = input
             .iter()
