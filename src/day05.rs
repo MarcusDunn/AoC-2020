@@ -117,7 +117,8 @@ mod day05test {
             .find(|(i, t)| input.get(i + 1).unwrap().get_seat_id() == t.get_seat_id() + 2)
             .unwrap()
             .1
-            .get_seat_id() + 1;
+            .get_seat_id()
+            + 1;
         assert_eq!(result, 617);
     }
 }
