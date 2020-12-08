@@ -1,7 +1,5 @@
 mod day07 {
     use std::collections::{HashMap, HashSet};
-    use std::fmt;
-    use std::fmt::{Display, Formatter};
     use std::hash::Hash;
     use std::str::FromStr;
 
@@ -11,21 +9,28 @@ mod day07 {
         color: String,
     }
 
-    impl Display for BagType {
-        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-            write!(f, "{} {}", self.adj, self.color)
-        }
-    }
-
     impl FromStr for BagType {
         type Err = ();
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let (adj, color) = s.split_once(" ").unwrap();
-            Ok(BagType {
-                adj: String::from(adj),
-                color: String::from(color.split(" ").next().unwrap()),
-            })
+            let (adj, color) = s.split_once(" ").expect(
+                format!(
+                    "attempted to split_once with a \" \" and failed on \"{}\"",
+                    s
+                )
+                .as_str(),
+            );
+            let adj = String::from(adj);
+            let color = String::from(
+                color.split(" ").next().expect(
+                    format!(
+                        "expected at least one value when splitting \"{}\" by \" \" but found none",
+                        color
+                    )
+                    .as_str(),
+                ),
+            );
+            Ok(BagType { adj, color })
         }
     }
 
@@ -46,7 +51,9 @@ mod day07 {
                 )
                 .as_str(),
             );
-            let bag_type = BagType::from_str(bag_desc).unwrap();
+            let bag_type = BagType::from_str(bag_desc).expect(
+                format!("expected to be able to turn {} into a BagType", bag_desc).as_str(),
+            );
             let inner = contents
                 .split(|c| c == ',')
                 .filter(|s| s.trim() != "no other bags.")
@@ -57,10 +64,16 @@ mod day07 {
                         .expect(format!("splitting at \" \" failed on string: \"{}\"", s).as_str());
                     (
                         BagType::from_str(bag_type).expect(
-                            format!("attempted to parse BagType from \"{}\"", bag_type).as_str(),
+                            format!(
+                                "attempted (and failed!) to parse BagType from \"{}\"",
+                                bag_type
+                            )
+                            .as_str(),
                         ),
-                        num.parse()
-                            .expect(format!("attempted to parse a i32 from \"{}\"", num).as_str()),
+                        num.parse().expect(
+                            format!("attempted (and failed!) to parse a i32 from \"{}\"", num)
+                                .as_str(),
+                        ),
                     )
                 })
                 .collect();
