@@ -3,21 +3,21 @@ pub mod expense_report {
 
     fn find_pair(report: &[i32], adds_to: i32) -> Option<(i32, i32)> {
         let mut partner_lookup: HashMap<i32, i32> = HashMap::new();
-        for x in report {
-            if let Some((&k, &v)) = partner_lookup.get_key_value(&x) {
-                return Some((k, v));
+        for &x in report {
+            if let Some(&v) = partner_lookup.get(&x) {
+                return Some((x, v));
             } else {
-                partner_lookup.insert(adds_to - x, *x);
+                partner_lookup.insert(adds_to - x, x);
             }
         }
         None
     }
 
-    impl ComboSums<i32> for Vec<i32> {
+    impl ComboSums<i32> for [i32] {
         fn find_combo(&self, goal: i32, vec_len: i32) -> Option<Vec<i32>> {
             if vec_len == 2 {
-                if let Some((a, b)) = find_pair(self, goal) {
-                    return Some(vec![a, b]);
+                if let Some(pair) = find_pair(self, goal) {
+                    return Some(vec![pair.0, pair.1]);
                 }
             } else {
                 let mut covered: Vec<i32> = Vec::new();
