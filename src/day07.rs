@@ -71,6 +71,12 @@ impl FromStr for Bag {
     }
 }
 
+impl<'a> Default for HashMatrix<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct HashMatrix<'a> {
     matrix: Vec<(&'a BagType, &'a BagType, i32)>,
 }

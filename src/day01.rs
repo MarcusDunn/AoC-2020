@@ -97,14 +97,6 @@ mod test {
     }
 
     #[test]
-    #[ignore] //takes ages, does pass though we seem to exit cleanly when we dont find anything!
-    fn test_long_quintuplet() {
-        let report = get_long_report();
-        let result = timed!(report.find_combo(2020, 5), "test_long_quintuplet");
-        assert!(result.is_none())
-    }
-
-    #[test]
     fn test_medium_sextuplet() {
         let report = get_medium_report(); // worst case as the correct numbers are all at the end. Time gets insanely long adding much more to the front than this (adding to the back has a lesser effect)
         let result = timed!(report.find_combo(2020, 6).unwrap(), "test_medium_sextuplet");

@@ -1,3 +1,4 @@
+use std::ops::RangeInclusive;
 use std::str::FromStr;
 
 enum EyeColor {
@@ -14,14 +15,14 @@ impl FromStr for EyeColor {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.to_ascii_lowercase().as_str() {
-            "amb" => Ok(Self::Amb),
-            "blu" => Ok(Self::Blu),
-            "brn" => Ok(Self::Brn),
-            "gry" => Ok(Self::Gry),
-            "grn" => Ok(Self::Grn),
-            "hzl" => Ok(Self::Hzl),
-            "oth" => Ok(Self::Oth),
+        match s {
+            "amb" | "Amb" => Ok(Self::Amb),
+            "blu" | "Blu" => Ok(Self::Blu),
+            "brn" | "Brn" => Ok(Self::Brn),
+            "gry" | "Gry" => Ok(Self::Gry),
+            "grn" | "Grn" => Ok(Self::Grn),
+            "hzl" | "Hzl" => Ok(Self::Hzl),
+            "oth" | "Oth" => Ok(Self::Oth),
             _ => Err(()),
         }
     }
@@ -37,8 +38,8 @@ impl FromStr for Unit {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "in" => Ok(Unit::In),
-            "cm" => Ok(Unit::Cm),
+            "in" | "In" => Ok(Unit::In),
+            "cm" | "Cm" => Ok(Unit::Cm),
             _ => Err(()),
         }
     }
@@ -55,11 +56,11 @@ impl FromStr for Height {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut value: Vec<char> = Vec::new();
         let mut unit: Vec<char> = Vec::new();
-        for x in s.chars() {
-            if x.is_numeric() {
-                value.push(x)
+        for c in s.chars() {
+            if c.is_numeric() {
+                value.push(c)
             } else {
-                unit.push(x)
+                unit.push(c)
             }
         }
         Ok(Height {
@@ -71,63 +72,72 @@ impl FromStr for Height {
 
 #[derive(Debug)]
 enum RequiredField {
-    BirthYear(String),
-    IssueYear(String),
-    ExpirationYear(String),
-    Hght(String),
-    HairColour(String),
-    EyeColour(String),
-    PassportID(String),
-    CountryID(String),
+    Byr(String),
+    Iyr(String),
+    Eyr(String),
+    Hgt(String),
+    Hcl(String),
+    Ecl(String),
+    Pid(String),
+    Cid(String),
 }
 
 impl RequiredField {
     fn meets_requirements(&self) -> bool {
         match self {
-            RequiredField::BirthYear(value) => {
-                let by: Option<i32> = value.parse().ok();
-                by.is_some() && value.len() == 4 && by.unwrap() <= 2002 && by.unwrap() >= 1920
+            RequiredField::Byr(birth_year) => {
+                RequiredField::has_len_and_within_range(birth_year, 1920..=2002, 4)
             }
-            RequiredField::IssueYear(value) => {
-                let iy: Option<i32> = value.parse().ok();
-                iy.is_some() && value.len() == 4 && iy.unwrap() >= 2010 && iy.unwrap() <= 2020
+
+            RequiredField::Iyr(issue_year) => {
+                RequiredField::has_len_and_within_range(issue_year, 2010..=2020, 4)
             }
-            RequiredField::ExpirationYear(value) => {
-                let ey: Option<i32> = value.parse().ok();
-                ey.is_some() && value.len() == 4 && ey.unwrap() >= 2020 && ey.unwrap() <= 2030
+
+            RequiredField::Eyr(expiration_year) => {
+                RequiredField::has_len_and_within_range(expiration_year, 2020..=2030, 4)
             }
-            RequiredField::Hght(value) => {
-                if let Ok(h) = Height::from_str(value) {
-                    match h.unit {
-                        Unit::In => h.value >= 59 && h.value <= 76,
-                        Unit::Cm => h.value >= 150 && h.value <= 193,
-                    }
-                } else {
-                    false
-                }
+
+            RequiredField::Hgt(height) => match Height::from_str(height) {
+                Ok(Height {
+                    value,
+                    unit: Unit::In,
+                }) => (59..=76).contains(&value),
+                Ok(Height {
+                    value,
+                    unit: Unit::Cm,
+                }) => (150..=193).contains(&value),
+                Err(_) => false,
+            },
+            RequiredField::Hcl(hair_color_hex) => {
+                hair_color_hex.len() == 7 && RequiredField::is_valid_color_hex(hair_color_hex)
             }
-            RequiredField::HairColour(value) => {
-                let a = value.chars().into_iter().enumerate().all(|(i, c)| {
-                    if i == 0 {
-                        c == '#'
-                    } else {
-                        c.is_numeric() || matches!(c, 'a'..='f')
-                    }
-                });
-                a && value.len() == 7
-            }
-            RequiredField::EyeColour(value) => value.parse::<EyeColor>().is_ok(),
-            RequiredField::PassportID(value) => {
-                value.len() == 9 && value.chars().all(|c| c.is_numeric())
-            }
-            RequiredField::CountryID(_) => true,
+            RequiredField::Ecl(eye_color) => eye_color.parse::<EyeColor>().is_ok(),
+            RequiredField::Pid(pid) => pid.len() == 9 && pid.chars().all(char::is_numeric),
+            RequiredField::Cid(_) => true,
         }
+    }
+
+    fn is_valid_color_hex(value: &str) -> bool {
+        value
+            .chars()
+            .into_iter()
+            .enumerate()
+            .all(|(i, c)| (c.is_numeric() || matches!(c, 'a'..='f')) || (i == 0 && c == '#'))
+    }
+
+    fn has_len_and_within_range(
+        value: &str,
+        acceptable_range: RangeInclusive<i32>,
+        acceptable_length: usize,
+    ) -> bool {
+        value.len() == acceptable_length
+            && matches!(value.parse::<i32>().ok(), Some(birth_year) if acceptable_range.contains(&birth_year))
     }
 }
 
 impl RequiredField {
     fn is_needed(&self) -> bool {
-        !matches!(self, RequiredField::CountryID(_))
+        !matches!(self, RequiredField::Cid(_))
     }
 }
 
@@ -138,14 +148,14 @@ impl FromStr for RequiredField {
         let (field, rest) = s.split_once(":").unwrap();
         let value = String::from(rest);
         match field {
-            "byr" => Ok(RequiredField::BirthYear(value)),
-            "iyr" => Ok(RequiredField::IssueYear(value)),
-            "eyr" => Ok(RequiredField::ExpirationYear(value)),
-            "hgt" => Ok(RequiredField::Hght(value)),
-            "hcl" => Ok(RequiredField::HairColour(value)),
-            "ecl" => Ok(RequiredField::EyeColour(value)),
-            "pid" => Ok(RequiredField::PassportID(value)),
-            "cid" => Ok(RequiredField::CountryID(value)),
+            "byr" | "Byr" => Ok(RequiredField::Byr(value)),
+            "iyr" | "Iyr" => Ok(RequiredField::Iyr(value)),
+            "eyr" | "Eyr" => Ok(RequiredField::Eyr(value)),
+            "hgt" | "Hgt" => Ok(RequiredField::Hgt(value)),
+            "hcl" | "Hcl" => Ok(RequiredField::Hcl(value)),
+            "ecl" | "Ecl" => Ok(RequiredField::Ecl(value)),
+            "pid" | "Pid" => Ok(RequiredField::Pid(value)),
+            "cid" | "Cid" => Ok(RequiredField::Cid(value)),
             _ => Err(()),
         }
     }
@@ -162,7 +172,10 @@ impl FromStr for Passport {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let fields = s
             .split(' ')
-            .map(|x| RequiredField::from_str(x).unwrap())
+            .map(|x| {
+                RequiredField::from_str(x)
+                    .unwrap_or_else(|_| panic!("failed to map {}, to RequiredField", x))
+            })
             .collect();
         Ok(Passport::new(fields))
     }
@@ -174,9 +187,8 @@ impl Passport {
     }
 
     pub fn is_valid(&self) -> bool {
-        let cond1 = self.fields.iter().filter(|f| f.is_needed()).count() == 7;
-        let cond2 = self.fields.iter().all(|f| f.meets_requirements());
-        cond1 && cond2
+        self.fields.iter().filter(|f| f.is_needed()).count() == 7
+            && self.fields.iter().all(|f| f.meets_requirements())
     }
 }
 

@@ -1,13 +1,13 @@
 ecl:Gry pid:860033327 eyr:2020 hcl:#fffffd
-byr:1937 iyr:2017 cid:147 hgt:183cm
+Byr:1937 Iyr:2017 cid:147 hgt:183cm
 
-iyr:2013 ecl:Amb cid:350 eyr:2023 pid:028048884
-hcl:#cfa07d byr:1929
+Iyr:2013 ecl:Amb cid:350 eyr:2023 pid:028048884
+hcl:#cfa07d Byr:1929
 
-hcl:#ae17e1 iyr:2013
+hcl:#ae17e1 Iyr:2013
 eyr:2024
-ecl:Brn pid:760753108 byr:1931
+ecl:Brn pid:760753108 Byr:1931
 hgt:179cm
 
 hcl:#cfa07d eyr:2025 pid:166559648
-iyr:2011 ecl:Brn hgt:59in
+Iyr:2011 ecl:Brn hgt:59in
