@@ -1,42 +1,40 @@
-mod day06 {
-    use std::collections::{HashMap};
-    use std::str::FromStr;
+use std::collections::HashMap;
+use std::str::FromStr;
 
-    #[derive(Debug)]
-    pub struct Group {
-        yeses: HashMap<char, usize>,
-        size: usize,
+#[derive(Debug)]
+pub struct Group {
+    yeses: HashMap<char, usize>,
+    size: usize,
+}
+
+impl Group {
+    pub fn amount_all_yeses(&self) -> usize {
+        self.yeses.iter().filter(|(_, i)| self.size.eq(i)).count()
     }
+}
 
-    impl Group {
-        pub fn amount_all_yeses(&self) -> usize {
-            self.yeses.iter().filter(|(_, i)| self.size.eq(i)).count()
-        }
-    }
+impl FromStr for Group {
+    type Err = ();
 
-    impl FromStr for Group {
-        type Err = ();
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let size = s.chars().filter(|c| c == &' ').count() + 1;
-            let filtered = s.chars().filter(|c| c != &' ').collect::<Vec<char>>();
-            let mut yeses = HashMap::new();
-            for char in filtered {
-                if let Some(&amount) = yeses.get(&char) {
-                    yeses.insert(char, amount + 1);
-                } else {
-                    yeses.insert(char, 1);
-                }
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let size = s.chars().filter(|c| c == &' ').count() + 1;
+        let filtered = s.chars().filter(|c| c != &' ').collect::<Vec<char>>();
+        let mut yeses = HashMap::new();
+        for char in filtered {
+            if let Some(&amount) = yeses.get(&char) {
+                yeses.insert(char, amount + 1);
+            } else {
+                yeses.insert(char, 1);
             }
-            Ok(Group { yeses, size })
         }
+        Ok(Group { yeses, size })
     }
 }
 
 #[cfg(test)]
-mod day06test {
-    use crate::day06::day06::Group;
-    use crate::loader::loader::file_to_vec_by_blank_lines;
+mod test {
+    use crate::day06::Group;
+    use crate::loader::file_to_vec_by_blank_lines;
 
     #[test]
     fn test_small() {

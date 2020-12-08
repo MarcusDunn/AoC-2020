@@ -1,73 +1,69 @@
-pub mod day03 {
-    use crate::day03::day03::Contents::{Empty, Tree};
+#[derive(Copy, Clone, Eq, PartialEq)]
+enum Contents {
+    Tree,
+    Empty,
+}
 
-    #[derive(Copy, Clone, Eq, PartialEq)]
-    enum Contents {
-        Tree,
-        Empty,
+impl Contents {
+    fn is_tree(&self) -> bool {
+        *self == Contents::Tree
     }
+}
 
-    impl Contents {
-        fn is_tree(&self) -> bool {
-            *self == Contents::Tree
-        }
-    }
-
-    impl From<char> for Contents {
-        fn from(c: char) -> Self {
-            match c {
-                '#' => Tree,
-                _ => Empty,
-            }
-        }
-    }
-
-    pub struct Forest {
-        contents: Vec<Contents>,
-        width: usize,
-    }
-
-    impl Forest {
-        pub fn new(contents: Vec<String>) -> Forest {
-            Forest {
-                contents: contents
-                    .iter()
-                    .map(|str| {
-                        str.chars()
-                            .map(|c| Contents::from(c))
-                            .collect::<Vec<Contents>>()
-                    })
-                    .flatten()
-                    .collect(),
-                width: contents.first().unwrap().len(),
-            }
-        }
-
-        fn get(&self, x: usize, y: usize) -> Option<&Contents> {
-            self.contents.get(y * self.width + (x % self.width))
-        }
-
-        pub fn trees_hit(&self, dx: usize, dy: usize) -> i32 {
-            let mut hit_count = 0;
-            let mut curr_h = 0;
-            let mut curr_w = 0;
-
-            while let Some(square) = self.get(curr_w, curr_h) {
-                if square.is_tree() {
-                    hit_count += 1;
-                }
-                curr_h += dy;
-                curr_w += dx;
-            }
-            hit_count
+impl From<char> for Contents {
+    fn from(c: char) -> Self {
+        match c {
+            '#' => Contents::Tree,
+            _ => Contents::Empty,
         }
     }
 }
 
+pub struct Forest {
+    contents: Vec<Contents>,
+    width: usize,
+}
+
+impl Forest {
+    pub fn new(contents: Vec<String>) -> Forest {
+        Forest {
+            contents: contents
+                .iter()
+                .map(|str| {
+                    str.chars()
+                        .map(Contents::from)
+                        .collect::<Vec<Contents>>()
+                })
+                .flatten()
+                .collect(),
+            width: contents.first().unwrap().len(),
+        }
+    }
+
+    fn get(&self, x: usize, y: usize) -> Option<&Contents> {
+        self.contents.get(y * self.width + (x % self.width))
+    }
+
+    pub fn trees_hit(&self, dx: usize, dy: usize) -> i32 {
+        let mut hit_count = 0;
+        let mut curr_h = 0;
+        let mut curr_w = 0;
+
+        while let Some(square) = self.get(curr_w, curr_h) {
+            if square.is_tree() {
+                hit_count += 1;
+            }
+            curr_h += dy;
+            curr_w += dx;
+        }
+        hit_count
+    }
+}
+
 #[cfg(test)]
-mod day03test {
-    use crate::day03::day03::Forest;
-    use crate::loader::loader::file_to_vec;
+mod test {
+    use crate::day03::Forest;
+    use crate::loader::file_to_vec;
 
     #[test]
     fn test_small() {

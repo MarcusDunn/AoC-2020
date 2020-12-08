@@ -1,64 +1,62 @@
-pub mod day02 {
-    use std::option::NoneError;
-    use std::str::FromStr;
+use std::option::NoneError;
+use std::str::FromStr;
 
-    #[derive(Debug)]
-    pub struct PolicyPasswordPair {
+#[derive(Debug)]
+pub struct PolicyPasswordPair {
+    letter: char,
+    first_char: i32,
+    second_char: i32,
+    password: String,
+}
+
+impl PolicyPasswordPair {
+    pub fn new(
         letter: char,
         first_char: i32,
         second_char: i32,
         password: String,
-    }
-
-    impl PolicyPasswordPair {
-        pub fn new(
-            letter: char,
-            first_char: i32,
-            second_char: i32,
-            password: String,
-        ) -> PolicyPasswordPair {
-            PolicyPasswordPair {
-                letter,
-                first_char,
-                second_char,
-                password,
-            }
-        }
-
-        pub fn is_following_policy(&self) -> bool {
-            if let Some(first) = self.password.chars().nth((self.first_char - 1) as usize) {
-                if let Some(second) = self.password.chars().nth((self.second_char - 1) as usize) {
-                    let is_letter_at_first = first == self.letter;
-                    let is_letter_at_second = second == self.letter;
-                    return (is_letter_at_first || is_letter_at_second)
-                        && !(is_letter_at_first && is_letter_at_second);
-                }
-            }
-            false
+    ) -> PolicyPasswordPair {
+        PolicyPasswordPair {
+            letter,
+            first_char,
+            second_char,
+            password,
         }
     }
 
-    impl FromStr for PolicyPasswordPair {
-        type Err = NoneError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let (first, rest) = s.rsplit_once("-")?;
-            let (second, rest) = rest.split_once(" ")?;
-            let (letter, password) = rest.split_once(":")?;
-            Ok(PolicyPasswordPair::new(
-                letter.parse().ok()?,
-                first.parse().ok()?,
-                second.parse().ok()?,
-                password.trim().parse().ok()?,
-            ))
+    pub fn is_following_policy(&self) -> bool {
+        if let Some(first) = self.password.chars().nth((self.first_char - 1) as usize) {
+            if let Some(second) = self.password.chars().nth((self.second_char - 1) as usize) {
+                let is_letter_at_first = first == self.letter;
+                let is_letter_at_second = second == self.letter;
+                return (is_letter_at_first || is_letter_at_second)
+                    && !(is_letter_at_first && is_letter_at_second);
+            }
         }
+        false
+    }
+}
+
+impl FromStr for PolicyPasswordPair {
+    type Err = NoneError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (first, rest) = s.rsplit_once("-")?;
+        let (second, rest) = rest.split_once(" ")?;
+        let (letter, password) = rest.split_once(":")?;
+        Ok(PolicyPasswordPair::new(
+            letter.parse().ok()?,
+            first.parse().ok()?,
+            second.parse().ok()?,
+            password.trim().parse().ok()?,
+        ))
     }
 }
 
 #[cfg(test)]
-mod day02test {
-    use crate::day02::day02::PolicyPasswordPair;
-    use crate::loader::loader::file_to_vec;
+mod test {
+    use crate::day02::PolicyPasswordPair;
+    use crate::loader::file_to_vec;
 
     #[test]
     fn test_small_input() {

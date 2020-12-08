@@ -1,7 +1,7 @@
 pub mod expense_report {
     use std::collections::HashMap;
 
-    fn find_pair(report: &Vec<i32>, adds_to: i32) -> Option<(i32, i32)> {
+    fn find_pair(report: &[i32], adds_to: i32) -> Option<(i32, i32)> {
         let mut partner_lookup: HashMap<i32, i32> = HashMap::new();
         for x in report {
             if let Some((&k, &v)) = partner_lookup.get_key_value(&x) {
@@ -34,7 +34,7 @@ pub mod expense_report {
         }
 
         fn find_combo_product(&self, goal: i32, vec_len: i32) -> Option<i32> {
-            Some(self.find_combo(goal, vec_len)?.iter().fold(1, |acc, x| acc * x))
+            Some(self.find_combo(goal, vec_len)?.iter().product())
         }
     }
 
@@ -45,9 +45,9 @@ pub mod expense_report {
 }
 
 #[cfg(test)]
-mod day01test {
+mod test {
     use crate::day01::expense_report::ComboSums;
-    use crate::loader::loader::file_to_vec;
+    use crate::loader::file_to_vec;
 
     #[test]
     fn test_short_pairs() {

@@ -1,4 +1,3 @@
-mod day08 {
     use core::fmt;
     use std::convert::TryInto;
     use std::str::FromStr;
@@ -61,14 +60,14 @@ mod day08 {
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             let (op, arg) = s
                 .split_once(" ")
-                .expect(format!("called split_once(\" \") on {}", s).as_str());
+                .unwrap_or_else(|| panic!("called split_once(\" \") on {}", s));
             Ok(Instruction {
                 operation: op
                     .parse()
-                    .expect(format!("attempted to turn {} into a Operation", op).as_str()),
+                    .unwrap_or_else(|_| panic!("called split_once(\" \") on {}", s)),
                 argument: arg
                     .parse()
-                    .expect(format!("failed to turn {} into a i32", arg).as_str()),
+                    .unwrap_or_else(|_| panic!("attempted to turn {} into a Operation", op)),
             })
         }
     }
@@ -115,26 +114,25 @@ mod day08 {
         }
 
         fn step(&mut self) -> Option<()> {
-            let instruction = self.fetch();
-            self.execute(*instruction?);
-            Some(())
-        }
-
-        fn get_state(&self) -> (i64, usize) {
-            (self.accumulator, self.program_counter)
+            if let Some(&instruction) = self.fetch() {
+                self.execute(instruction);
+                Some(())
+            } else {
+                None
+            }
         }
 
         pub fn fix(&mut self) {
             let mut i = 0;
             loop {
                 self.swap_jmp_nop(i);
-                if self.loops() { // didnt fix
-                    self.swap_jmp_nop(i); // swap back
+                if self.loops() {
+                    self.swap_jmp_nop(i);
                     self.reset();
+                    i += 1;
                 } else {
-                    break
+                    break;
                 }
-                i += 1;
             }
         }
 
@@ -154,7 +152,8 @@ mod day08 {
         pub fn loops(&mut self) -> bool {
             let mut executed = vec![];
             loop {
-                let pc = self.step_and_get_pc();
+                self.step();
+                let pc = self.program_counter;
                 if executed.contains(&pc) {
                     return true;
                 } else if self.program_counter == self.instructions.len() {
@@ -165,10 +164,11 @@ mod day08 {
             }
         }
 
-        pub fn run(&mut self) {
+        pub fn run_until_loop(&mut self) {
             let mut executed = vec![];
             loop {
-                let pc = self.step_and_get_pc();
+                self.step();
+                let pc = self.program_counter;
                 if executed.contains(&pc) {
                     break;
                 } else {
@@ -176,23 +176,17 @@ mod day08 {
                 }
             }
         }
-
-        fn step_and_get_pc(&mut self) -> usize {
-            self.step();
-            self.get_state().1
-        }
     }
     impl fmt::Display for Program {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             write!(f, "acc: {}, pc: {}", self.accumulator, self.program_counter)
         }
     }
-}
 
 #[cfg(test)]
 mod test {
-    use crate::day08::day08::{Instruction, Program};
-    use crate::loader::loader::file_to_vec;
+    use crate::day08::{Instruction, Program};
+    use crate::loader::file_to_vec;
 
     #[test]
     fn test_parse() {
@@ -202,14 +196,14 @@ mod test {
     #[test]
     fn test_program_small() {
         let mut prgm = Program::new(file_to_vec::<Instruction>("inputs/day08small.txt"));
-        prgm.run();
+        prgm.run_until_loop();
         assert_eq!(5, prgm.get_acc());
     }
 
     #[test]
     fn test_program() {
         let mut prgm = Program::new(file_to_vec::<Instruction>("inputs/day08.txt"));
-        prgm.run();
+        prgm.run_until_loop();
         assert_eq!(1475, prgm.get_acc());
     }
 
