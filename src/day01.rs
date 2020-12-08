@@ -52,28 +52,40 @@ mod test {
     #[test]
     fn test_short_pairs() {
         let report = get_short_report();
-        let result = timed!(report.find_combo_product(2020, 2).unwrap(), "test_short_pairs");
+        let result = timed!(
+            report.find_combo_product(2020, 2).unwrap(),
+            "test_short_pairs"
+        );
         assert_eq!(result, 514579);
     }
 
     #[test]
     fn test_long_pairs() {
         let report = get_long_report();
-        let result = timed!(report.find_combo_product(2020, 2).unwrap(), "test_long_pairs");
+        let result = timed!(
+            report.find_combo_product(2020, 2).unwrap(),
+            "test_long_pairs"
+        );
         assert_eq!(result, 357504);
     }
 
     #[test]
     fn test_short_triples() {
         let report = get_short_report();
-        let result = timed!(report.find_combo_product(2020, 3).unwrap(), "test_short_triples");
+        let result = timed!(
+            report.find_combo_product(2020, 3).unwrap(),
+            "test_short_triples"
+        );
         assert_eq!(result, 241861950);
     }
 
     #[test]
     fn test_long_triples() {
         let report = get_long_report();
-        let result = timed!(report.find_combo_product(2020, 3).unwrap(), "test_long_triples");
+        let result = timed!(
+            report.find_combo_product(2020, 3).unwrap(),
+            "test_long_triples"
+        );
         assert_eq!(result, 12747392);
     }
 
@@ -106,10 +118,10 @@ mod test {
     fn get_medium_report() -> Vec<i32> {
         vec![
             1383, 1276, 1613, 1190, 1856, 1528, 1091, 1540, 1720, 1824, 1734, 1919, 1681, 1686,
-            1344, 1644, 1670, 1710, 1708, 1458, 1728, 1972, 1630, 1995, 1763, 1935, 451, 1392, 1990,
-            14, 1893, 1437, 1632, 1933, 1887, 1975, 1453, 1897, 2005, 2008, 1959, 1716, 1635, 1619,
-            543, 231, 123, 11, 1, 4, 55, 24, 342, 1234, 3221, 900, 595, 420, 70, 30, 5, 40, 565,
-            3241, 1123, 2234
+            1344, 1644, 1670, 1710, 1708, 1458, 1728, 1972, 1630, 1995, 1763, 1935, 451, 1392,
+            1990, 14, 1893, 1437, 1632, 1933, 1887, 1975, 1453, 1897, 2005, 2008, 1959, 1716, 1635,
+            1619, 543, 231, 123, 11, 1, 4, 55, 24, 342, 1234, 3221, 900, 595, 420, 70, 30, 5, 40,
+            565, 3241, 1123, 2234,
         ]
     }
 

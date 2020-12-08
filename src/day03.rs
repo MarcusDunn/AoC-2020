@@ -29,11 +29,7 @@ impl Forest {
         Forest {
             contents: contents
                 .iter()
-                .map(|str| {
-                    str.chars()
-                        .map(Contents::from)
-                        .collect::<Vec<Contents>>()
-                })
+                .map(|str| str.chars().map(Contents::from).collect::<Vec<Contents>>())
                 .flatten()
                 .collect(),
             width: contents.first().unwrap().len(),

@@ -12,11 +12,19 @@ impl FromStr for BagType {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (adj, color) = s.split_once(" ").unwrap_or_else(|| panic!("attempted to split_once with a \" \" and failed on \"{}\"", s));
+        let (adj, color) = s.split_once(" ").unwrap_or_else(|| {
+            panic!(
+                "attempted to split_once with a \" \" and failed on \"{}\"",
+                s
+            )
+        });
         let adj = String::from(adj);
-        let color = String::from(
-            color.split(' ').next().unwrap_or_else(|| panic!("expected at least one value when splitting \"{}\" by \" \" but found none", color)),
-        );
+        let color = String::from(color.split(' ').next().unwrap_or_else(|| {
+            panic!(
+                "expected at least one value when splitting \"{}\" by \" \" but found none",
+                color
+            )
+        }));
         Ok(BagType { adj, color })
     }
 }
@@ -30,7 +38,12 @@ impl FromStr for Bag {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (bag_desc, contents) = s.split_once("bags contain").unwrap_or_else(|| panic!("all lines should contain \"bags contain\", instead got \"{}\"", s));
+        let (bag_desc, contents) = s.split_once("bags contain").unwrap_or_else(|| {
+            panic!(
+                "all lines should contain \"bags contain\", instead got \"{}\"",
+                s
+            )
+        });
         let bag_type = BagType::from_str(bag_desc)
             .unwrap_or_else(|_| panic!("expected to be able to turn {} into a BagType", bag_desc));
         let inner = contents

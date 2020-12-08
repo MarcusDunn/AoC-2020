@@ -78,9 +78,9 @@ impl FromStr for Seat {
 
 #[cfg(test)]
 mod test {
-    use std::str::FromStr;
-    use crate::loader::file_to_vec;
     use crate::day05::Seat;
+    use crate::loader::file_to_vec;
+    use std::str::FromStr;
 
     #[test]
     fn test_from_str() {
