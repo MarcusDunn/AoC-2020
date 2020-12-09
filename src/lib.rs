@@ -2,6 +2,7 @@
 #![feature(try_trait)]
 #![feature(iterator_fold_self)]
 #![feature(associated_type_bounds)]
+#![feature(allocator_api)]
 
 #[macro_use]
 mod timer;
@@ -15,4 +16,5 @@ pub mod day05;
 pub mod day06;
 pub mod day07;
 pub mod day08;
+mod day09;
 
