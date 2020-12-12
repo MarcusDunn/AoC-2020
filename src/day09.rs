@@ -1,4 +1,5 @@
 use crate::day01::expense_report::ComboSums;
+use std::cmp::Ordering;
 
 pub struct XMAS {
     preamble_len: usize,
@@ -13,18 +14,24 @@ impl XMAS {
         }
     }
 
-    fn find_contiguous_summing_to(&self, goal: i32) -> Vec<i32> {
+    fn find_contiguous_summing_to(&self, goal: i32) -> i32 {
         let mut contiguous = Vec::new();
         let mut i = 0;
+        let mut sum = 0;
         loop {
-            let sum: i32 = contiguous.iter().sum();
-            if sum < goal {
-                contiguous.push(self.contents[i]);
-                i += 1
-            } else if sum > goal {
-                contiguous.remove(0);
-            } else {
-                return contiguous;
+            match sum.cmp(&goal) {
+                Ordering::Less => {
+                    let new_value = self.contents[i];
+                    contiguous.push(new_value);
+                    sum += new_value;
+                    i += 1
+                }
+                Ordering::Equal => {
+                    return contiguous.iter().max().unwrap() + contiguous.iter().min().unwrap();
+                }
+                Ordering::Greater => {
+                    sum -= contiguous.remove(0);
+                }
             }
         }
     }
@@ -47,7 +54,7 @@ impl XMAS {
             .take(self.preamble_len)
             .copied()
             .collect::<Vec<i32>>()
-            .find_combo(*self.contents.get(index).unwrap(), 2)
+            .find_combo(self.contents[index], 2)
             .is_some()
     }
 }
@@ -90,8 +97,7 @@ mod test {
     fn test_find_vec_summing_to_anomaly_large() {
         let code = XMAS::from(file_to_vec::<i32>("inputs/day09.txt"));
         let rule_breaker = code.find_rule_breaker();
-        let mut res = code.find_contiguous_summing_to(rule_breaker);
-        res.sort();
-        assert_eq!(4830226, res[0] + res[res.len() - 1]);
+        let res = code.find_contiguous_summing_to(rule_breaker);
+        assert_eq!(4830226, res);
     }
 }
