@@ -16,7 +16,7 @@ impl DaisyChain {
     fn new(mut adaptors: Vec<usize>) -> DaisyChain {
         adaptors.insert(0, 0);
         adaptors.push(adaptors.iter().max().unwrap() + 3);
-        adaptors.sort();
+        adaptors.sort_unstable();
         DaisyChain { adaptors }
     }
 
@@ -34,7 +34,7 @@ impl DaisyChain {
             curr_adapter = *adaptor;
         }
 
-        return count.0 * count.2;
+        count.0 * count.2
     }
 
     pub fn part_two(&self) -> usize {

@@ -86,7 +86,7 @@ impl From<char> for Spot {
 }
 
 #[derive(Eq, PartialEq, Clone)]
-struct WaitingArea {
+pub struct WaitingArea {
     spots: Vec<Vec<Spot>>,
 }
 
@@ -180,17 +180,13 @@ impl WaitingArea {
         [
             [
                 self.spots[x - 1][y - 1],
-                self.spots[x - 1][y + 0],
+                self.spots[x - 1][y],
                 self.spots[x - 1][y + 1],
             ],
-            [
-                self.spots[x + 0][y - 1],
-                self.spots[x + 0][y + 0],
-                self.spots[x + 0][y + 1],
-            ],
+            [self.spots[x][y - 1], self.spots[x][y], self.spots[x][y + 1]],
             [
                 self.spots[x + 1][y - 1],
-                self.spots[x + 1][y + 0],
+                self.spots[x + 1][y],
                 self.spots[x + 1][y + 1],
             ],
         ]
@@ -199,16 +195,18 @@ impl WaitingArea {
     fn find_in_dir(&self, location: (i32, i32), direction: (i32, i32)) -> Spot {
         let mut i = 1;
         loop {
-            let ray: (usize, usize) = ((location.0 + (direction.0 * i)) as usize, (location.1 + (direction.1 * i)) as usize);
+            let ray: (usize, usize) = (
+                (location.0 + (direction.0 * i)) as usize,
+                (location.1 + (direction.1 * i)) as usize,
+            );
             if let Some(spot) = self.spots.get(ray.0).unwrap_or(&Vec::new()).get(ray.1) {
                 if !(*spot == Spot::Floor) {
-                    return *spot
-                }
-                else {
+                    return *spot;
+                } else {
                     i += 1
                 }
             } else {
-                return Spot::Empty
+                return Spot::Empty;
             }
         }
     }
