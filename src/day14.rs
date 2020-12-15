@@ -251,22 +251,29 @@ mod tests {
 
     #[test]
     fn test_p2_small() {
+
+        timed!({
         let mut prog = parse("inputs/day14smallp2.txt");
         prog.run_v2();
         assert_eq!(
             208,
             prog.mem.iter().fold(0, |acc, (_, x)| x.clone() + acc)
         );
+        }, "test_p2_small"
+        );
     }
 
     #[test]
     fn test_p2() {
+        timed!({
         let mut prog = parse("inputs/day14.txt");
         prog.run_v2();
         assert_eq!(
             5724245857696,
             prog.mem.iter().fold(0, |acc, (_, x)| x.clone() + acc)
         );
+        }, "test_p2");
+
     }
 
 
