@@ -4,6 +4,9 @@
 #![feature(associated_type_bounds)]
 #![feature(allocator_api)]
 
+#![allow(dead_code)]
+
+
 #[macro_use]
 mod timer;
 pub mod loader;
@@ -23,4 +26,5 @@ pub mod day12;
 pub mod day13;
 pub mod day14;
 pub mod day15;
+pub mod day16;
 

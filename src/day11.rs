@@ -164,16 +164,16 @@ impl WaitingArea {
     fn create_3x3_rtx(&self, x: usize, y: usize) -> [[Spot; 3]; 3] {
         let ix = x as i32;
         let iy = y as i32;
-        let n = self.find_in_dir((ix, iy), (1, 0));
-        let s = self.find_in_dir((ix, iy), (-1, 0));
-        let e = self.find_in_dir((ix, iy), (0, -1));
-        let w = self.find_in_dir((ix, iy), (0, 1));
+        let north = self.find_in_dir((ix, iy), (1, 0));
+        let south = self.find_in_dir((ix, iy), (-1, 0));
+        let east = self.find_in_dir((ix, iy), (0, -1));
+        let west = self.find_in_dir((ix, iy), (0, 1));
         let nw = self.find_in_dir((ix, iy), (1, 1));
         let ne = self.find_in_dir((ix, iy), (1, -1));
         let sw = self.find_in_dir((ix, iy), (-1, 1));
         let se = self.find_in_dir((ix, iy), (-1, -1));
         let focus = self.spots[x][y];
-        [[nw, n, ne], [w, focus, e], [sw, s, se]]
+        [[nw, north, ne], [west, focus, east], [sw, south, se]]
     }
 
     fn create_3x3(&self, x: usize, y: usize) -> [[Spot; 3]; 3] {

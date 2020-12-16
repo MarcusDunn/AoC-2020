@@ -43,7 +43,7 @@ impl Add<u128> for Base2Num {
 
 impl From<i32> for Base2Num {
     fn from(num: i32) -> Self {
-        let mut num_cpy = num.clone() as i128;
+        let mut num_cpy = num as i128;
         let mut inner = Vec::new();
         for i in (0..36).rev() {
             let pow = 2_i128.pow(i);
@@ -92,7 +92,7 @@ impl Program {
             }
         }
     }
-    fn mask_v2(mask: &String, num: String) -> String {
+    fn mask_v2(mask: &str, num: String) -> String {
         let mut out: Vec<char> = Vec::new();
         let zipped = mask.chars().zip(num.chars());
         for (mask_c, num_c) in zipped.into_iter() {
@@ -107,7 +107,7 @@ impl Program {
         out.iter().collect()
     }
 
-    fn find_poss_from_masked(masked: &String) -> Vec<String> {
+    fn find_poss_from_masked(masked: &str) -> Vec<String> {
         Self::find_poss_from_masked_r(vec![masked.chars().collect()])
             .iter()
             .map(|s| s.iter().collect())
@@ -135,9 +135,9 @@ impl Program {
         }
     }
 
-    fn mask(mask: &String, num: Base2Num) -> Base2Num {
+    fn mask(mask: &str, num: Base2Num) -> Base2Num {
         let mut i = 0;
-        let mut out = num.clone();
+        let mut out = num;
         while let Some(c) = mask.chars().nth(i) {
             if c == '1' || c == '0' {
                 out.inner[i] = c == '1';

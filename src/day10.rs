@@ -1,4 +1,3 @@
-use crate::loader::file_to_vec;
 use std::collections::HashMap;
 use std::ops::{Index, IndexMut};
 
@@ -75,6 +74,7 @@ impl IndexMut<usize> for DaisyChain {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::loader::file_to_vec;
 
     #[test]
     fn test_parse() {
