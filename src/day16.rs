@@ -35,16 +35,18 @@ impl Input {
     }
 
     fn map_index_to_rule(&self) -> u128 {
-        let mut possibilities = HashMap::new();
+        let mut possibilities = Vec::new();
         let mut covered = HashSet::new();
         for i in 0..self.my_ticket.len() {
             possibilities.insert(i, self.rules.clone());
         }
         loop {
+            // should only be two loops
             for ticket in &self.nearby_tickets {
                 for field_index in 0..ticket.len() {
-                    if let Some(possible_rules) = possibilities.get_mut(&field_index) {
+                    if let Some(possible_rules) = possibilities.get_mut(field_index) {
                         let field = ticket[field_index];
+
                         if possible_rules.len() > 1 {
                             Input::remove_impossible_rules(&mut covered, possible_rules, &field);
                         }
@@ -53,22 +55,18 @@ impl Input {
                             let guaranteed = possible_rules.iter().next().unwrap();
                             covered.insert(guaranteed.0.clone());
                         }
-                    } else {
-                        println!("no rules at {} \n {:?}", field_index, possibilities)
+
+                        if possibilities.iter().all(|v| v.len() == 1) {
+                            return possibilities
+                                .iter()
+                                .enumerate()
+                                .filter(|(_, r)| r.iter().next().unwrap().0.contains("departure"))
+                                .fold(1, |acc, (i, _)| acc * self.my_ticket[i] as u128);
+                        }
                     }
                 }
             }
-            if possibilities.values().all(|v| v.len() == 1) {
-                break;
-            }
         }
-        let mut product: u128 = 1;
-        for (index, rule) in possibilities {
-            if rule.iter().next().unwrap().0.contains("departure") {
-                product *= self.my_ticket[index] as u128
-            }
-        }
-        product
     }
 
     fn remove_impossible_rules(
@@ -115,10 +113,13 @@ mod tests {
     #[test]
     fn test_p2() {
         let mut valid = parse("inputs/day16.txt");
-        timed!({
-            valid.kill_invalid();
-            assert_eq!(1053686852011, valid.map_index_to_rule())
-        });
+        timed!(
+            {
+                valid.kill_invalid();
+                assert_eq!(1053686852011, valid.map_index_to_rule())
+            },
+            "test_p2"
+        );
     }
 
     #[derive(Eq, PartialEq, Copy, Clone)]
